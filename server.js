@@ -33,7 +33,7 @@ app.prepare().then(() => {
     // PeerJS Server
     const peerServer = ExpressPeerServer(server, {
         debug: true,
-        path: '/myapp'
+        path: '/'
     });
 
     expressApp.use('/peerjs', peerServer);
@@ -47,6 +47,6 @@ app.prepare().then(() => {
         if (err) throw err;
         const localIp = getLocalIp();
         console.log(`> AmanDrop (PeerJS) ready on http://${localIp}:${port}`);
-        console.log(`> PeerServer running at http://${localIp}:${port}/peerjs/myapp`);
+        console.log(`> PeerServer running at http://${localIp}:${port}/peerjs`);
     });
 });
