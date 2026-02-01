@@ -193,7 +193,7 @@ export default function Home() {
             mime: file.type
         }));
 
-        const chunkSize = 64 * 1024;
+        const chunkSize = 256 * 1024;
         let offset = 0;
 
         const readChunk = () => {
@@ -258,8 +258,14 @@ export default function Home() {
 
                         {/* Progress */}
                         {transferProgress > 0 && (
-                            <div className="mt-6 w-full bg-slate-900 rounded-full h-2 overflow-hidden">
-                                <div className="bg-blue-500 h-full transition-all duration-100" style={{ width: `${transferProgress}%` }} />
+                            <div className="mt-6 w-full">
+                                <div className="flex justify-between text-xs font-medium text-slate-400 mb-1">
+                                    <span>{status.includes('Sending') ? 'Uploading' : 'Downloading'}</span>
+                                    <span>{Math.round(transferProgress)}%</span>
+                                </div>
+                                <div className="bg-slate-900 rounded-full h-2 overflow-hidden">
+                                    <div className="bg-blue-500 h-full transition-all duration-100" style={{ width: `${transferProgress}%` }} />
+                                </div>
                             </div>
                         )}
                     </div>

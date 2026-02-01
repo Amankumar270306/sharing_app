@@ -1,8 +1,10 @@
-const { createServer } = require('http');
+const { createServer } = require('https');
 const { parse } = require('url');
 const next = require('next');
 const { Server } = require('socket.io');
 const os = require('os');
+const fs = require('fs');
+const path = require('path');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -22,13 +24,23 @@ function getLocalIp() {
     return 'localhost';
 }
 
+const httpsOptions = {
+    key: fs.readFileSync(path.join(__dirname, 'certificates', 'server.key')),
+    cert: fs.readFileSync(path.join(__dirname, 'certificates', 'server.cert')),
+};
+
 app.prepare().then(() => {
-    const server = createServer((req, res) => {
+    const server = createServer(httpsOptions, (req, res) => {
         const parsedUrl = parse(req.url, true);
         handle(req, res, parsedUrl);
     });
 
-    const io = new Server(server);
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
+        }
+    });
 
     io.on('connection', (socket) => {
         // Default room logic: Client should emit 'join'
@@ -66,6 +78,7 @@ app.prepare().then(() => {
     server.listen(port, (err) => {
         if (err) throw err;
         const ip = getLocalIp();
-        console.log(`> AmanDrop is running! Scan the QR code or go to: http://${ip}:${port}`);
+        console.log(`> AmanDrop is running! Scan the QR code or go to: https://${ip}:${port}`);
+        console.log('Note: You will need to accept the self-signed certificate warning in your browser.');
     });
 });
