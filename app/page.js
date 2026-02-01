@@ -193,7 +193,7 @@ export default function Home() {
             mime: file.type
         }));
 
-        const chunkSize = 64 * 1024;
+        const chunkSize = 256 * 1024;
         let offset = 0;
 
         const readChunk = () => {
